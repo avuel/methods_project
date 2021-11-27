@@ -45,13 +45,7 @@ class Customer:
         else:
             validated = True
 
-        # If either test was false recursively call login
-        if validated is False or validated is False:
-            result = False
-        else:
-            result = True
-
-        return result
+        return validated
 
     def create_account(self):
         # Create a connection to the db and make a cursor
