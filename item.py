@@ -49,7 +49,6 @@ def search_item(name: str, category: str) -> 'list':
 
     # If we did not grab any rows, we did not find the item
     if len(tuples) == 0:
-        #print(f"The item {name} not found")
         return None
 
     # Return the rows we grabbed
