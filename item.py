@@ -8,6 +8,14 @@ class Item:
         self.__category: str = category
         self.__stock: int = stock
 
+    # Get the ID of an Item
+    def getID(self) -> int:
+        return self.__itemID
+
+    # Get the Name of an Item
+    def getName(self) -> str:
+        return self.__name
+
     # Get the Category of an Item
     def getCategory(self) -> str:
         return self.__category
@@ -23,3 +31,95 @@ class Item:
     # Set the Stock of an Item
     def setStock(self, stock: int) -> None:
         self.__stock = stock
+
+def search_item(name: str, category: str) -> 'list':
+    import sqlite3 as sql
+    from sqlite3.dbapi2 import Connection, Cursor, OperationalError
+    from typing import Any
+
+    # Connect to the database and create a cursor
+    conn: Connection = sql.connect('e-commerce.db')
+    c: Cursor = conn.cursor()
+
+    # Grab all of the data where the item name and category match
+    query: str = "SELECT * FROM items WHERE name=:name AND category=:category"
+    c.execute(query, {'name': name, 'category': category})
+
+    # Grab the rows and commmit all of our changes and close our connection
+    tuples: list[Any] = c.fetchall()
+    conn.commit()
+    conn.close()
+
+    # If we did not grab any rows, we did not find the item
+    if len(tuples) == 0:
+        print(f"The item {name} not found")
+        return None
+
+    # Return the rows we grabbed
+    return tuples
+
+def insert_item(name: str, unitCost: float, category: str, stock: int) -> None:
+    import sqlite3 as sql
+    from sqlite3.dbapi2 import Connection, Cursor, OperationalError
+    from typing import Any
+
+    # Connect to the database and create a cursor
+    conn: Connection = sql.connect('e-commerce.db')
+    c: Cursor = conn.cursor()
+
+    try: 
+        # Check if the item is in the database
+        tuples: list[Any] = search_item(name, category)
+
+        # Search returns none if we did not find the item
+        if tuples is not None:
+            print(f"The item {name} of the category {category} is already in the database")
+            # Commit our changes and close the database
+            conn.commit()
+            conn.close()
+            return None
+
+        # Insert the item into our database (we do not need an itemID as it is automatically generated)
+        query: str = f"INSERT INTO items (name, unitCost, category, stock) VALUES (:name, :unitCost, :category, :stock)"
+        c.execute(query, {'name': name, 'unitCost': unitCost, 'category': category, 'stock': stock})
+  
+    except sql.IntegrityError:
+        # If we get an integrity error, print that we failed to insert the item
+        print("Failed to insert the item into the database", end="\n\n")
+
+    # Commit our changes and close the database
+    conn.commit()
+    conn.close()
+
+def remove_item(name: str, category: str) -> None:
+    import sqlite3 as sql
+    from sqlite3.dbapi2 import Connection, Cursor, OperationalError
+    from typing import Any
+
+    # Connect to the database and create a cursor
+    conn: Connection = sql.connect('e-commerce.db')
+    c: Cursor = conn.cursor()
+
+    try: 
+        # Check if the item is in the database
+        tuples: list[Any] = search_item(name, category)
+
+        # Search returns none if we did not find the item
+        if tuples is None:
+            print(f"The item {name} of the category {category} is not in the database")
+            # Commit our changes and close the database
+            conn.commit()
+            conn.close()
+            return None
+
+        # Delete all of the rows from the database where the item name and category match
+        query: str = f"DELETE FROM items WHERE name=:name AND category=:category"
+        c.execute(query, {'name': name, 'category': category})
+  
+    except sql.IntegrityError:
+        # If we get an integrity error, print that we failed to delete the item
+        print("Failed to delete the item from the database", end="\n\n")
+
+    # Commit our changes and close the database
+    conn.commit()
+    conn.close()
