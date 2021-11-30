@@ -1,12 +1,15 @@
 # Item Class
 class Item:
     # Constructor for the Item Class
-    def __init__(self, itemId: int, name: str, unitCost: float, category: str, stock: int) -> None:
+    def __init__(self, itemId: int, name: str, unitCost: float, category: str) -> None:
         self.__itemID: int = None
         self.__name: str = name
         self.__unitCost: float = unitCost
         self.__category: str = category
-        self.__stock: int = stock
+
+    # Change how our object is printed (just print the item name for now)
+    def __repr__(self) -> str:
+        return self.__name
 
     # Get the ID of an Item
     def getID(self) -> int:
@@ -24,17 +27,11 @@ class Item:
     def getUnitCost(self) -> float:
         return self.__unitCost
 
-    # Get the Stock of an Item
-    def getStock(self) -> int:
-        return self.__stock
 
-    # Set the Stock of an Item
-    def setStock(self, stock: int) -> None:
-        self.__stock = stock
-
+# Search for an item based on category and name
 def search_item(name: str, category: str) -> 'list':
     import sqlite3 as sql
-    from sqlite3.dbapi2 import Connection, Cursor, OperationalError
+    from sqlite3.dbapi2 import Connection, Cursor
     from typing import Any
 
     # Connect to the database and create a cursor
@@ -52,15 +49,16 @@ def search_item(name: str, category: str) -> 'list':
 
     # If we did not grab any rows, we did not find the item
     if len(tuples) == 0:
-        print(f"The item {name} not found")
         return None
 
     # Return the rows we grabbed
     return tuples
 
-def insert_item(name: str, unitCost: float, category: str, stock: int) -> None:
+
+# Insert an item into the items table
+def insert_item(name: str, category: str, unitCost: float) -> None:
     import sqlite3 as sql
-    from sqlite3.dbapi2 import Connection, Cursor, OperationalError
+    from sqlite3.dbapi2 import Connection, Cursor
     from typing import Any
 
     # Connect to the database and create a cursor
@@ -80,8 +78,8 @@ def insert_item(name: str, unitCost: float, category: str, stock: int) -> None:
             return None
 
         # Insert the item into our database (we do not need an itemID as it is automatically generated)
-        query: str = f"INSERT INTO items (name, unitCost, category, stock) VALUES (:name, :unitCost, :category, :stock)"
-        c.execute(query, {'name': name, 'unitCost': unitCost, 'category': category, 'stock': stock})
+        query: str = f"INSERT INTO items (name, unitCost, category) VALUES (:name, :unitCost, :category)"
+        c.execute(query, {'name': name, 'unitCost': unitCost, 'category': category})
   
     except sql.IntegrityError:
         # If we get an integrity error, print that we failed to insert the item
@@ -91,9 +89,11 @@ def insert_item(name: str, unitCost: float, category: str, stock: int) -> None:
     conn.commit()
     conn.close()
 
+
+# Remove an item from the items table
 def remove_item(name: str, category: str) -> None:
     import sqlite3 as sql
-    from sqlite3.dbapi2 import Connection, Cursor, OperationalError
+    from sqlite3.dbapi2 import Connection, Cursor
     from typing import Any
 
     # Connect to the database and create a cursor
@@ -123,3 +123,24 @@ def remove_item(name: str, category: str) -> None:
     # Commit our changes and close the database
     conn.commit()
     conn.close()
+
+# Grab all of the rows from the items table
+def get_items() -> list:
+    import sqlite3 as sql
+    from sqlite3.dbapi2 import Connection, Cursor
+    from typing import Any
+
+    # Connect to the database and create a cursor
+    conn: Connection = sql.connect('e-commerce.db')
+    c: Cursor = conn.cursor()
+
+    query: str = "SELECT * FROM items"
+    c.execute(query)
+
+    # Grab the rows and commmit all of our changes and close our connection
+    tuples: list[Any] = c.fetchall()
+    conn.commit()
+    conn.close()
+
+    # Return the rows we grabbed
+    return tuples
