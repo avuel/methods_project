@@ -1,10 +1,12 @@
-import os
-from Customer import Customer
-from time import sleep
-
-
-# Jacob's code #
 def main():
+    import os
+    from Customer import Customer
+    from Item import Item
+    from Cart import Cart
+    from Inventory import Inventory
+    from time import sleep
+    from typing import Any
+
     logged_in: bool = False
     run: bool = True
     customer = None
