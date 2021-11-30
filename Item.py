@@ -124,6 +124,7 @@ def remove_item(name: str, category: str) -> None:
     conn.commit()
     conn.close()
 
+    
 # Grab all of the rows from the items table
 def get_items() -> list:
     import sqlite3 as sql
