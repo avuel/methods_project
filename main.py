@@ -157,7 +157,7 @@ def main():
                         if (in_cart):
                             print(f'Successfully removed {item} from the Cart')
                         else:
-                            print(f'{item_name} is not in the Cart')
+                            print(f'{item} is not in the Cart')
                         sleep(1.5)
                         os.system('cls' if os.name in ('nt', 'dos') else 'clear')
 
