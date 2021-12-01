@@ -88,7 +88,7 @@ def main():
                 run: bool = False
                 print('---Exiting---\n')
                 break
-
+                
         # Display menus and allow the user to interact with the store once we are logged in
         while (logged_in):
             # Print the e-Commerce Store prompt to the user
