@@ -59,6 +59,8 @@ def main():
 
             # If we want to create an account, ask for a username and password (and validate the account can be made)
             elif user_input == CREATE_ACCOUNT:
+                print('---Create Account---\n')
+                
                 # Get the user's input and create a Customer object
                 username = input("Enter your username: ")
                 password = input("Enter your password: ")
