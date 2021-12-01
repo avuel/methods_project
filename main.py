@@ -227,7 +227,8 @@ def main():
 
                     # Display the user's order history
                     if user_input == ORDER_HIST:
-                        print(f'---{CustomerObj.getOrderHistory()}\'s Order History---\n')
+                        while (user_input != GO_BACK):
+                            print(f'---{CustomerObj.getOrderHistory()}\'s Order History---\n')
 
                     # Update the user's username (after prompting for the user's password)
                     elif user_input == EDIT_USER:
