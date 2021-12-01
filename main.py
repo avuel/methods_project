@@ -34,15 +34,14 @@ def main():
 
             # If we want to log in, attempt to get the username and password to login
             if user_input == LOGIN:
-                print('---Login---\n')
                 # Get the user's input and create a Customer object
-                username: str = input("Enter your username: ")
-                password: str = input("Enter your password: ")
+                username = input("Enter your username: ")
+                password = input("Enter your password: ")
 
-                customer = Customer(username, password)
+                CustomerObj = Customer(username, password)
 
                 # Attempt to log the user in and get the result
-                logged_in = customer.login()
+                logged_in = CustomerObj.login()
                 if logged_in is False:
                     print('Failed to log in!')
                     sleep(1.5)
@@ -60,21 +59,20 @@ def main():
 
             # If we want to create an account, ask for a username and password (and validate the account can be made)
             elif user_input == CREATE_ACCOUNT:
-                print('---Create Account---\n')
                 # Get the user's input and create a Customer object
                 username = input("Enter your username: ")
                 password = input("Enter your password: ")
 
-                new_account = Customer(username, password)
-                create_account: bool = new_account.create_account()
-                
-                if create_account is False:
+                CustomerObj = Customer(username, password)
+
+                create_result = CustomerObj.create_account()
+                if create_result is False:
                     print('Failed to create account!')
                     sleep(1.5)
                     os.system('cls' if os.name == 'nt' else 'clear')
                     continue
 
-                elif create_account is True:
+                elif create_result is True:
                     print('Successfully created account!')
                     sleep(1.5)
                     os.system('cls' if os.name == 'nt' else 'clear')
