@@ -138,10 +138,10 @@ def main():
                     os.system('cls' if os.name in ('nt', 'dos') else 'clear')
 
                     # Menu options for the user
-                    VIEW_CART = '1'
-                    REMOVE_ITEM = '2'
-                    ADD_ITEM = '3'
-                    CHECKOUT = '4'
+                    VIEW_CART: str = '1'
+                    REMOVE_ITEM: str = '2'
+                    ADD_ITEM: str = '3'
+                    CHECKOUT: str = '4'
 
                     # Display the user's cart
                     if user_input == VIEW_CART:
@@ -152,9 +152,10 @@ def main():
                     # Attempt to remove the user specified item from their cart
                     elif user_input == REMOVE_ITEM:
                         print('---Remove Item---\n')
-                        item_name = input('Please enter the name of the item you would like to remove from the Cart: ')
-                        if item_name is not None:
-                            print(f'Successfully removed {item_name} from the Cart')
+                        item: str = input('Please enter the name of the item you would like to remove from the Cart: ')
+                        in_cart: bool = True
+                        if (in_cart):
+                            print(f'Successfully removed {item} from the Cart')
                         else:
                             print(f'{item_name} is not in the Cart')
                         sleep(1.5)
@@ -163,6 +164,8 @@ def main():
                     # Attempt to add the user specified item to their cart
                     elif user_input == ADD_ITEM:
                         print('---Add Item---\n')
+                        item: str = input('Please enter the item you want to add to the Cart: ')
+                        category: str = input(f"Please enter the Category of the item {item}: ")
                         item_name = input('Please enter the name of the item you would like to add to the Cart: ')
 
                     # Check the user out
@@ -223,16 +226,18 @@ def main():
                     os.system('cls' if os.name in ('nt', 'dos') else 'clear')
 
                     # Menu options for the Customer Menu
-                    ORDER_HIST = '1'
-                    EDIT_USER = '2'
-                    EDIT_PASS = '3'
-                    EDIT_PAY = '4'
-                    EDIT_ADDR = '5'
-                    DEL_ACC = 'd'
+                    ORDER_HIST: str = '1'
+                    EDIT_USER: str = '2'
+                    EDIT_PASS: str = '3'
+                    EDIT_PAY: str = '4'
+                    EDIT_ADDR: str = '5'
+                    DEL_ACC: str = 'd'
 
                     # Display the user's order history
                     if user_input == ORDER_HIST:
-                        print(f'---{CustomerObj.getOrderHistory()}\'s Order History---\n')
+                        while (user_input != GO_BACK):
+                            print(f'---{username}\'s Order History---\n')
+                            user_input: str = input('Enter r to go back to the Inventory Menu: ')
 
                     # Update the user's username (after prompting for the user's password)
                     elif user_input == EDIT_USER:
@@ -337,7 +342,7 @@ def main():
                     # Go back to the main store menu
                     elif user_input == GO_BACK:
                         loop: bool = False
-                        continue
+                        os.system('cls' if os.name == 'nt' else 'clear')
 
                     # Log the user out
                     elif user_input == LOGOUT:
