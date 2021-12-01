@@ -1,5 +1,6 @@
+import sqlite3
+
 def createDB():
-    import sqlite3
     # Create a connection to the database
     connect = sqlite3.connect('e-commerce.db')
     cur = connect.cursor()

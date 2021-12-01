@@ -65,7 +65,7 @@ def insert_item(name: str, category: str, unitCost: float) -> None:
     conn: Connection = sql.connect('e-commerce.db')
     c: Cursor = conn.cursor()
 
-    try: 
+    try:
         # Check if the item is in the database
         tuples: list[Any] = search_item(name, category)
 
@@ -80,7 +80,7 @@ def insert_item(name: str, category: str, unitCost: float) -> None:
         # Insert the item into our database (we do not need an itemID as it is automatically generated)
         query: str = f"INSERT INTO items (name, unitCost, category) VALUES (:name, :unitCost, :category)"
         c.execute(query, {'name': name, 'unitCost': unitCost, 'category': category})
-  
+
     except sql.IntegrityError:
         # If we get an integrity error, print that we failed to insert the item
         print("Failed to insert the item into the database", end="\n\n")
@@ -100,7 +100,7 @@ def remove_item(name: str, category: str) -> None:
     conn: Connection = sql.connect('e-commerce.db')
     c: Cursor = conn.cursor()
 
-    try: 
+    try:
         # Check if the item is in the database
         tuples: list[Any] = search_item(name, category)
 
@@ -115,7 +115,7 @@ def remove_item(name: str, category: str) -> None:
         # Delete all of the rows from the database where the item name and category match
         query: str = f"DELETE FROM items WHERE name=:name AND category=:category"
         c.execute(query, {'name': name, 'category': category})
-  
+
     except sql.IntegrityError:
         # If we get an integrity error, print that we failed to delete the item
         print("Failed to delete the item from the database", end="\n\n")
@@ -124,7 +124,7 @@ def remove_item(name: str, category: str) -> None:
     conn.commit()
     conn.close()
 
-    
+
 # Grab all of the rows from the items table
 def get_items() -> list:
     import sqlite3 as sql
