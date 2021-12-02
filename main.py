@@ -9,7 +9,7 @@ def main():
 
     logged_in: bool = False
     run: bool = True
-    customer = None
+    customer: Customer = None
 
     while run:
         # Loop until we have logged in or exit
@@ -35,13 +35,13 @@ def main():
             # If we want to log in, attempt to get the username and password to login
             if user_input == LOGIN:
                 # Get the user's input and create a Customer object
-                username = input("Enter your username: ")
-                password = input("Enter your password: ")
+                username: str = input("Enter your username: ")
+                password: str = input("Enter your password: ")
 
-                CustomerObj = Customer(username, password)
+                customer: Customer = Customer(username, password)
 
                 # Attempt to log the user in and get the result
-                logged_in = CustomerObj.login()
+                logged_in: bool = customer.login()
                 if logged_in is False:
                     print('Failed to log in!')
                     sleep(1.5)
@@ -62,19 +62,19 @@ def main():
                 print('---Create Account---\n')
                 
                 # Get the user's input and create a Customer object
-                username = input("Enter your username: ")
-                password = input("Enter your password: ")
+                username: str = input("Enter your username: ")
+                password: str = input("Enter your password: ")
 
-                CustomerObj = Customer(username, password)
+                customer: Customer = Customer(username, password)
 
-                create_result = CustomerObj.create_account()
-                if create_result is False:
+                create_account: bool = customer.create_account()
+                if create_account is False:
                     print('Failed to create account!')
                     sleep(1.5)
                     os.system('cls' if os.name == 'nt' else 'clear')
                     continue
 
-                elif create_result is True:
+                elif create_account is True:
                     print('Successfully created account!')
                     sleep(1.5)
                     os.system('cls' if os.name == 'nt' else 'clear')
@@ -228,7 +228,7 @@ def main():
                     # Display the user's order history
                     if user_input == ORDER_HIST:
                         while (user_input != GO_BACK):
-                            print(f'---{CustomerObj.getOrderHistory()}\'s Order History---\n')
+                            print(f'---{customer.getOrderHistory()}\'s Order History---\n')
 
                     # Update the user's username (after prompting for the user's password)
                     elif user_input == EDIT_USER:
@@ -237,7 +237,7 @@ def main():
                         username: str = input('Please enter your new username: ')
 
                         # If the user did not enter a valid password send the back to the menu
-                        if password != CustomerObj.getPassword():
+                        if password != customer.getPassword():
                             print("Action failed. Please check credentials.")
                             sleep(1.5)
                             # Clear the screen after we get our input
@@ -245,7 +245,7 @@ def main():
                             break
                         # If the user enter a valid password delete their account
                         else:
-                            CustomerObj.setUsername(username)
+                            customer.setUsername(username)
                             continue
 
                     # Update the user's password (after prompting for the user's password)
@@ -255,7 +255,7 @@ def main():
                         newPassword: str = input('Please enter your new password: ')
 
                         # If the user did not enter a valid password send the back to the menu
-                        if password != CustomerObj.getPassword():
+                        if password != customer.getPassword():
                             print("Action failed. Please check credentials.")
                             sleep(1.5)
                             # Clear the screen after we get our input
@@ -263,7 +263,7 @@ def main():
                             break
                         # If the user enter a valid password delete their account
                         else:
-                            CustomerObj.setPassword(newPassword)
+                            customer.setPassword(newPassword)
                             continue
 
                     # Update the user's payment info (after prompting for the user's password)
@@ -273,7 +273,7 @@ def main():
                         payment: str = input('Please enter your new payment information: ')
 
                         # If the user did not enter a valid password send the back to the menu
-                        if password != CustomerObj.getPassword():
+                        if password != customer.getPassword():
                             print("Action failed. Please check credentials.")
                             sleep(1.5)
                             # Clear the screen after we get our input
@@ -281,20 +281,20 @@ def main():
                             break
                         # If the user enter a valid password delete their account
                         else:
-                            CustomerObj.setPaymentInfo(payment)
+                            customer.setPaymentInfo(payment)
                             continue
 
                     # Update the user's address (after prompting for the user's password)
                     elif user_input == EDIT_ADDR:
                         print('---Edit Address Info---\n')
                         password: str = input('Please enter your password: ')
-                        address: str = input('Please enter your address: ')
+                        address: str = input('Please enter your street address: ')
                         city: str = input('Please enter your city: ')
                         state: str = input('Please enter your state: ')
                         zipCode: str = input('Please enter your zip: ')
 
                         # If the user did not enter a valid password send the back to the menu
-                        if password != CustomerObj.getPassword():
+                        if password != customer.getPassword():
                             print("Action failed. Please check credentials.")
                             sleep(1.5)
                             # Clear the screen after we get our input
@@ -302,10 +302,10 @@ def main():
                             break
                         # If the user enter a valid password delete their account
                         else:
-                            CustomerObj.setAddress(address)
-                            CustomerObj.setCity(city)
-                            CustomerObj.setState(state)
-                            CustomerObj.setZip(zipCode)
+                            customer.setAddress(address)
+                            customer.setCity(city)
+                            customer.setState(state)
+                            customer.setZip(zipCode)
                             continue
 
                     # Delete the user's account (after having them verify they want to delete it)
@@ -322,11 +322,10 @@ def main():
                             break
                         # If the user enter a valid password delete their account
                         else:
-                            if input(
-                                    'Please type DELETE if you are sure you want to delete your account: ') == 'DELETE':
-                                CustomerObj.delete_account()
-                                logged_in = False
-                                loop = False
+                            if input('Please type DELETE if you are sure you want to delete your account: ') == 'DELETE':
+                                customer.delete_account()
+                                logged_in: bool = False
+                                loop: bool = False
                                 continue
                             else:
                                 break
