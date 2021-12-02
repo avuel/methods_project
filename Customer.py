@@ -24,6 +24,8 @@ class Customer:
 
         # Update the database to reflect the changes
         cur.execute("UPDATE Customer SET username=? WHERE username=?", (username, self.__username))
+        cur.execute("UPDATE cart SET username=? WHERE username=?", (username, self.__username))
+        cur.execute("UPDATE Orders SET username=? WHERE username=?", (username, self.__username))
 
         # Commit the changes and close the connection
         connect.commit()
@@ -54,6 +56,7 @@ class Customer:
         cur = connect.cursor()
 
         # Update the database to reflect the changes
+        cur.execute("UPDATE Customer SET address=? WHERE username=?", (address, self.__username))
         cur.execute("UPDATE Customer SET address=? WHERE username=?", (address, self.__username))
 
         # Commit the changes and close the connection
