@@ -1,12 +1,38 @@
-def createDB():
-    import sqlite3
+import sqlite3
+
+# Create the customer table for the database
+def create_customer_table():
+
     # Create a connection to the database
     connect = sqlite3.connect('e-commerce.db')
     cur = connect.cursor()
 
     # Create the database if it does not exist
-    cur.execute("CREATE TABLE IF NOT EXISTS Customer (username text, password text, address text, city text, "
-                "state text, zip text, paymentInfo text)")
+    cur.execute("CREATE TABLE IF NOT EXISTS Customer ("
+                "username TEXT UNIQUE PRIMARY KEY,"
+                "password TEXT,"
+                "address TEXT,"
+                "city TEXT, "
+                "state text, zip text, paymentInfo text)"
+                )
+
+    # Commit the changes and close the connection
+    connect.commit()
+    connect.close()
+
+# Create the order table for the database
+def create_order_table():
+    # Create a connection to the database
+    connect = sqlite3.connect('e-commerce.db')
+    cur = connect.cursor()
+
+    # Create the database if it does not exist
+    cur.execute("CREATE TABLE IF NOT EXISTS Orders ("
+                "orderID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+                "username TEXT FOREIGN KEY,"
+                "total TEXT,"
+                "address TEST)"
+                )
 
     # Commit the changes and close the connection
     connect.commit()
@@ -14,13 +40,12 @@ def createDB():
 
 def build_items_table() -> None:
     import sqlite3 as sql
-    from sqlite3.dbapi2 import Connection, Cursor, OperationalError
-    from typing import Any
+    from sqlite3.dbapi2 import Connection, Cursor
+
+    conn: Connection = sql.connect('e-commerce.db')
+    c: Cursor = conn.cursor()
 
     try:
-        conn: Connection = sql.connect('e-commerce.db')
-        c: Cursor = conn.cursor()
-
         query: str = ('CREATE TABLE IF NOT EXISTS items ('
                             'itemID      INTEGER    NOT NULL    PRIMARY KEY AUTOINCREMENT,'
                             'name        TEXT       NOT NULL    UNIQUE,'
@@ -29,24 +54,26 @@ def build_items_table() -> None:
                             'stock       INTEGER    NOT NULL'
                         ')')
         c.execute(query)
-        conn.commit()
-        conn.close()
 
     except sql.OperationalError:
         print('Failed to create items table')
 
+    conn.commit()
+    conn.close()
+
 def delete_items_table() -> None:
     import sqlite3 as sql
-    from sqlite3.dbapi2 import Connection, Cursor, OperationalError
-    from typing import Any
+    from sqlite3.dbapi2 import Connection, Cursor
+
+    conn: Connection = sql.connect('e-commerce.db')
+    c: Cursor = conn.cursor()
 
     try:
-        conn: Connection = sql.connect('e-commerce.db')
-        c: Cursor = conn.cursor()
         query: str = "DROP TABLE items"
         c.execute(query)
-        conn.commit()
-        conn.close()
 
     except sql.OperationalError:
         print('Failed to delete items table')
+
+    conn.commit()
+    conn.close()
