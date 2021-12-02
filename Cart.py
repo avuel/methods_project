@@ -64,7 +64,7 @@ class Cart:
         return None
 
     # Load the data from the cart table for the specified user
-    def load(self):
+    def load(self) -> None:
         from Item import get_items
         from Inventory import get_inventory
         from typing import Any

@@ -3,7 +3,7 @@ def createDB():
     create_customer_table()
     create_items_table()
     create_inventory_table()
-    create_order_table()
+    create_orders_table()
     create_cart_table()
 
 # Create the customer table for the database
@@ -15,33 +15,35 @@ def create_customer_table():
     cur = connect.cursor()
 
     # Create the database if it does not exist
-    cur.execute("CREATE TABLE IF NOT EXISTS Customer ("
-                "username TEXT UNIQUE PRIMARY KEY,"
-                "password TEXT,"
-                "address TEXT,"
-                "city TEXT, "
-                "state text, zip text, paymentInfo text);"
-                )
+    cur.execute("""CREATE TABLE IF NOT EXISTS Customer (
+                username TEXT UNIQUE PRIMARY KEY,
+                password TEXT,
+                address TEXT,
+                city TEXT, 
+                state text, 
+                zip text, 
+                paymentInfo text);
+                """)
 
     # Commit the changes and close the connection
     connect.commit()
     connect.close()
 
 # Create the order table for the database
-def create_order_table():
+def create_orders_table():
     import sqlite3
     # Create a connection to the database
     connect = sqlite3.connect('e-commerce.db')
     cur = connect.cursor()
 
     # Create the database if it does not exist
-    cur.execute("CREATE TABLE IF NOT EXISTS Orders ("
-                "orderID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-                "username TEXT NOT NULL,"
-                "total TEXT,"
-                "address TEXT,"
-                "FOREIGN KEY(username) REFERENCES Customer(username));"
-                )
+    cur.execute("""CREATE TABLE IF NOT EXISTS Orders (
+                orderID INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL,
+                total TEXT,
+                address TEXT,
+                FOREIGN KEY(username) REFERENCES Customer(username));
+                """)
 
     # Commit the changes and close the connection
     connect.commit()

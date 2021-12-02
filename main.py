@@ -6,6 +6,7 @@ def main():
     from Item import Item
     from time import sleep
     from typing import Any
+    import sqlite3
 
     logged_in: bool = False
     run: bool = True
@@ -327,8 +328,25 @@ def main():
 
                     # Display the user's order history
                     if user_input == ORDER_HIST:
+
                         while (user_input != GO_BACK):
-                            print(f'---{customer.getOrderHistory()}\'s Order History---\n')
+
+                            orders = customer.getOrderHistory()
+
+                            if len(orders) == 0:
+                                print("You have no exisitng orders.")
+                                sleep(1.5)
+                                # Clear the screen after we get our input
+                                os.system('cls' if os.name in ('nt', 'dos') else 'clear')
+                                break
+
+                            else:
+                                print('r. Go Back\n')
+
+                                for row in orders:
+                                    print(row[1] + "'s ","Order: \tTotal: ", "$" + row[2], "\tShipping address: ", row[3])
+
+                                user_input = input("\nEnter \'r\' to go back: ")
 
                     # Update the user's username (after prompting for the user's password)
                     elif user_input == EDIT_USER:
