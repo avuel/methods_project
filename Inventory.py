@@ -5,7 +5,7 @@ class Inventory:
     def __init__(self) -> None:
         self.__items = {}
 
-    def getInv(self):
+    def getInv(self) -> dict:
         from copy import deepcopy
         return deepcopy(self.__items)
 
