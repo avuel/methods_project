@@ -1,5 +1,4 @@
 from Item import Item
-import sqlite3
 
 class Inventory:
     # Constructor
@@ -29,7 +28,4 @@ class Inventory:
                     return item
         print(f"The item {item} of the category {category} is not in the inventory")
         return None
-
-
-
    
