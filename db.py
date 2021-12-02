@@ -25,7 +25,6 @@ def create_order_table():
     cur = connect.cursor()
 
     # Create the database if it does not exist
-
     cur.execute("CREATE TABLE IF NOT EXISTS Orders ("
                 "orderID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
                 "username TEXT FOREIGN KEY,"
