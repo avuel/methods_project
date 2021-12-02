@@ -19,7 +19,7 @@ def create_customer_table():
                 "password TEXT,"
                 "address TEXT,"
                 "city TEXT, "
-                "state text, zip text, paymentInfo text)"
+                "state text, zip text, paymentInfo text);"
                 )
 
     # Commit the changes and close the connection
@@ -36,16 +36,17 @@ def create_order_table():
     # Create the database if it does not exist
     cur.execute("CREATE TABLE IF NOT EXISTS Orders ("
                 "orderID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-                "username TEXT FOREIGN KEY,"
+                "username TEXT NOT NULL,"
                 "total TEXT,"
-                "address TEST)"
+                "address TEST,"
+                "FOREIGN KEY(username) REFERENCES Customer(username));"
                 )
 
     # Commit the changes and close the connection
     connect.commit()
     connect.close()
 
-def build_items_table() -> None:
+def create_items_table() -> None:
     import sqlite3 as sql
     from sqlite3.dbapi2 import Connection, Cursor
 
@@ -57,13 +58,12 @@ def build_items_table() -> None:
                             'itemID      INTEGER    NOT NULL    PRIMARY KEY AUTOINCREMENT,'
                             'name        TEXT       NOT NULL    UNIQUE,'
                             'unitCost    REAL       NOT NULL,'
-                            'category    TEXT       NOT NULL,'
-                            'stock       INTEGER    NOT NULL'
+                            'category    TEXT       NOT NULL'
                         ')')
         c.execute(query)
 
     except sql.OperationalError:
-        print('Failed to create items table')
+        ...
 
     conn.commit()
     conn.close()
@@ -80,24 +80,25 @@ def delete_items_table() -> None:
         c.execute(query)
 
     except sql.OperationalError:
-        print('Failed to delete items table')
+        ...
 
     conn.commit()
     conn.close()
 
-# Create the order table for the database
+# Create the inventory table for the database
 def create_inventory_table():
     import sqlite3
     # Create a connection to the database
     connect = sqlite3.connect('e-commerce.db')
-    cur = connect.cursor()
+    c = connect.cursor()
 
     # Create the database if it does not exist
-    cur.execute("CREATE TABLE IF NOT EXISTS Orders ("
-                "itemID INTEGER NOT NULL,"
-                "stock INTEGER,"
-                "Foregin Key (itemID) REFERENCES items(itemID))"
-                )
+    query: str = ('CREATE TABLE IF NOT EXISTS inventory ('
+                            'itemID     INTEGER    NOT NULL     PRIMARY KEY,'
+                            'stock      INTEGER    NOT NULL,'
+                            'FOREIGN KEY(itemID) REFERENCES items(itemID)'
+                        ');')
+    c.execute(query)
 
     # Commit the changes and close the connection
     connect.commit()
