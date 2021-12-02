@@ -85,7 +85,7 @@ def delete_items_table() -> None:
     conn.commit()
     conn.close()
 
-# Create the order table for the database
+# Create the inventory table for the database
 def create_inventory_table():
     import sqlite3
     # Create a connection to the database
