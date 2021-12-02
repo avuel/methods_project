@@ -2,14 +2,14 @@
 class Item:
     # Constructor for the Item Class
     def __init__(self, itemId: int, name: str, unitCost: float, category: str) -> None:
-        self.__itemID: int = None
+        self.__itemID: int = itemId
         self.__name: str = name
         self.__unitCost: float = unitCost
         self.__category: str = category
 
-    # Change how our object is printed (just print the item name for now)
+    # Change how our object is printed
     def __repr__(self) -> str:
-        return self.__name
+        return (f"ID: {self.__itemID}\nName: {self.__name}\nunitCost: {self.__unitCost:.2f}\nCategory: {self.__category}\n")
 
     # Get the ID of an Item
     def getID(self) -> int:
@@ -71,7 +71,6 @@ def insert_item(name: str, category: str, unitCost: float) -> None:
 
         # Search returns none if we did not find the item
         if tuples is not None:
-            print(f"The item {name} of the category {category} is already in the database")
             # Commit our changes and close the database
             conn.commit()
             conn.close()
@@ -82,8 +81,8 @@ def insert_item(name: str, category: str, unitCost: float) -> None:
         c.execute(query, {'name': name, 'unitCost': unitCost, 'category': category})
   
     except sql.IntegrityError:
-        # If we get an integrity error, print that we failed to insert the item
-        print("Failed to insert the item into the database", end="\n\n")
+        # If we get an integrity error, continue on
+        ...
 
     # Commit our changes and close the database
     conn.commit()
@@ -106,7 +105,6 @@ def remove_item(name: str, category: str) -> None:
 
         # Search returns none if we did not find the item
         if tuples is None:
-            print(f"The item {name} of the category {category} is not in the database")
             # Commit our changes and close the database
             conn.commit()
             conn.close()
@@ -117,8 +115,8 @@ def remove_item(name: str, category: str) -> None:
         c.execute(query, {'name': name, 'category': category})
   
     except sql.IntegrityError:
-        # If we get an integrity error, print that we failed to delete the item
-        print("Failed to delete the item from the database", end="\n\n")
+        # If we get an integrity error, continue on
+        ...
 
     # Commit our changes and close the database
     conn.commit()

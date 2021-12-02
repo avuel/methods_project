@@ -1,7 +1,10 @@
+from Inventory import load_db
+
+
 def main():
     import os
     from Customer import Customer
-    from Item import Item
+    from Item import Item, get_items
     from Cart import Cart
     from Inventory import Inventory
     from time import sleep
@@ -10,6 +13,7 @@ def main():
     logged_in: bool = False
     run: bool = True
     customer: Customer = None
+    inventory: Inventory = Inventory()
 
     while run:
         # Loop until we have logged in or exit
@@ -50,6 +54,7 @@ def main():
 
                 elif logged_in is True:
                     print('Successfully logged in!')
+                    inventory.load()
                     sleep(1.5)
                     os.system('cls' if os.name == 'nt' else 'clear')
                     continue
@@ -384,6 +389,10 @@ def main():
                     if user_input == VIEW_ITEMS:
                         while (user_input != GO_BACK):
                             print('---Items---\n')
+                            inv: dict = inventory.getInv()
+                            for item in inv:
+                                print(f"{item}Stock: {inv[item]}\n")
+                            print()
                             user_input: str = input('Enter r to go back to the Inventory Menu: ')
 
                     elif user_input == SEARCH_CATEGORY:
@@ -391,24 +400,30 @@ def main():
                             print('---View Category--\n')
                             category: str = input('Please enter which category: ')
                             os.system('cls' if os.name in ('nt', 'dos') else 'clear')
-                            
                             print(f"---{category}---\n")
+                            inv: dict = inventory.getInv()
+                            for item in inv:
+                                if item.getCategory() == category:
+                                    print(f"{item}Stock: {inv[item]}\n")
+                            print()
                             user_input: str = input('Enter r to go back to the Inventory Menu: ')
 
                     # Search for an item in the store's inventory based on the user's input
                     elif user_input == SEARCH_ITEMS:
                         while (user_input != GO_BACK):
                             print('---View Item---\n')
-                            item: str = input('Please enter the name of the item: ')
-                            in_inventory: bool = True
+                            name: str = input('Please enter the name of the item: ')
+                            items = inventory.getItem(name)
                             os.system('cls' if os.name in ('nt', 'dos') else 'clear')
 
                             print('---View Item---\n')
-                            if in_inventory:
+                            if items is not None:
+                                for item in items:
+                                    print(item)
                                 user_input: str = input('Enter r to go back to the Inventory Menu: ')
 
                             else:
-                                print(f"{item} was not found")
+                                print(f"{name} was not found")
                                 sleep(1.5)
                                 user_input = GO_BACK
 

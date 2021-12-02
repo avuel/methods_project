@@ -130,12 +130,18 @@ class Customer:
 
     # This functions checks if the user entered valid credentials and returns the result
     def login(self):
+        from Item import insert_item
+        from Inventory import load_db
         # Create a connection to the db and make a cursor
         connect = sqlite3.connect("e-commerce.db")
         cur = connect.cursor()
         # create the db
-        create_customer_table()
-
+        createDB()
+        insert_item('harry potter','books',1.30)
+        insert_item('captain underpants','books',5.30)
+        insert_item('the odyssey','books',10.21)
+        insert_item('iliad','books',50)
+        load_db()
         # Try to get the user from the table
         cur.execute("SELECT username FROM Customer WHERE username=? AND password=?", (self.__username, self.__password))
         row = cur.fetchall()
@@ -154,7 +160,7 @@ class Customer:
         connect = sqlite3.connect("e-commerce.db")
         cur = connect.cursor()
         # create the db
-        create_customer_table()
+        createDB()
 
         # Try to get the user from the table, on success set the flag to true
         cur.execute("SELECT * FROM Customer WHERE username=?", (self.__username,))
