@@ -29,6 +29,7 @@ class Inventory:
         print(f"The item {item} of the category {category} is not in the inventory")
         return None
    
+
     def load_db(self) -> None:
         import sqlite3 as sql
         from sqlite3.dbapi2 import Connection, Cursor
@@ -64,4 +65,5 @@ def load_inventory() -> Inventory:
     for item in items:
         inventory.addItem(Item(item[0], item[1], item[2], item[3]), stock)
         stock: int = stock + 1
+
 
