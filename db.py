@@ -39,7 +39,7 @@ def create_order_table():
                 "orderID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
                 "username TEXT NOT NULL,"
                 "total TEXT,"
-                "address TEST,"
+                "address TEXT,"
                 "FOREIGN KEY(username) REFERENCES Customer(username));"
                 )
 
@@ -87,7 +87,7 @@ def delete_items_table() -> None:
     conn.close()
 
 # Create the inventory table for the database
-def create_inventory_table():
+def create_inventory_table() -> None:
     import sqlite3
     # Create a connection to the database
     connect = sqlite3.connect('e-commerce.db')
@@ -106,23 +106,25 @@ def create_inventory_table():
     connect.close()
     
 # Create the Cart Table for the database
-def create_cart_table():
-    import sqlite3
-    # Create a connection to the database
-    connect = sqlite3.connect('e-commerce.db')
-    c = connect.cursor()
+def create_cart_table() -> None:
+    import sqlite3 as sql
+    from sqlite3.dbapi2 import Connection, Cursor
+
+    conn: Connection = sql.connect('e-commerce.db')
+    c: Cursor = conn.cursor()
 
     # Create the database if it does not exist
     query: str = ('CREATE TABLE IF NOT EXISTS cart ('
-                            'cartId     INTEGER    NOT NULL     PRIMARY KEY AUTOINCREMENT,'
+                            'cartID     INTEGER    NOT NULL     PRIMARY KEY AUTOINCREMENT,'
+                            'username   TEXT       NOT NULL,'
                             'itemID     INTEGER    NOT NULL,'
-                            'name        TEXT       NOT NULL    UNIQUE,'
-                            'quantity      INTEGER    NOT NULL,'
+                            'quantity   INTEGER    NOT NULL,'
+                            'FOREIGN KEY(username) REFERENCES Customer(username),'
                             'FOREIGN KEY(itemID) REFERENCES items(itemID)'
                         ');')
                         
     c.execute(query)
 
     # Commit the changes and close the connection
-    connect.commit()
-    connect.close()
+    conn.commit()
+    conn.close()

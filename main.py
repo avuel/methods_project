@@ -1,16 +1,17 @@
 def main():
     import os
     from Customer import Customer
-    from Item import Item, get_items
     from Cart import Cart
-    from Inventory import Inventory, load_db
+    from Inventory import Inventory
+    from Item import Item
     from time import sleep
     from typing import Any
 
     logged_in: bool = False
     run: bool = True
     customer: Customer = None
-    inventory: Inventory = Inventory()
+    inventory: Inventory = None
+    cart: Cart = None
 
     while run:
         # Loop until we have logged in or exit
@@ -39,25 +40,25 @@ def main():
                 username: str = input("Enter your username: ")
                 password: str = input("Enter your password: ")
 
+                # Create a customer object of the specified username and password
                 customer: Customer = Customer(username, password)
 
                 # Attempt to log the user in and get the result
                 logged_in: bool = customer.login()
                 if logged_in is False:
                     print('Failed to log in!')
-                    sleep(1.5)
-                    os.system('cls' if os.name == 'nt' else 'clear')
-                    continue
 
                 elif logged_in is True:
                     print('Successfully logged in!')
+                    inventory: Inventory = Inventory()
+                    cart: Cart = Cart(customer.getUsername())
                     inventory.load()
-                    sleep(1.5)
-                    os.system('cls' if os.name == 'nt' else 'clear')
-                    continue
+                    cart.load()
 
+                # Sleep to let the user read the output and then clear the menu
                 sleep(1.5)
                 os.system('cls' if os.name == 'nt' else 'clear')
+                continue
 
             # If we want to create an account, ask for a username and password (and validate the account can be made)
             elif user_input == CREATE_ACCOUNT:
@@ -67,23 +68,21 @@ def main():
                 username: str = input("Enter your username: ")
                 password: str = input("Enter your password: ")
 
+                # Create a customer object of the specified username and password
                 customer: Customer = Customer(username, password)
 
+                # Try to create the accoutn and output the result
                 create_account: bool = customer.create_account()
                 if create_account is False:
                     print('Failed to create account!')
-                    sleep(1.5)
-                    os.system('cls' if os.name == 'nt' else 'clear')
-                    continue
 
                 elif create_account is True:
                     print('Successfully created account!')
-                    sleep(1.5)
-                    os.system('cls' if os.name == 'nt' else 'clear')
-                    continue
 
+                # Sleep to let the user read the output and then clear the menu
                 sleep(1.5)
                 os.system('cls' if os.name == 'nt' else 'clear')
+                continue
 
             # Exit the program
             elif user_input == EXIT:
@@ -119,16 +118,14 @@ def main():
 
             # Display the cart menu and handle interacting with the user's cart
             if user_input == CART_MENU:
-                cart: Cart =Cart()
-                inventory: Inventory = Inventory()
                 # Loop until we want to return to the main menu, log out, or exit the program
                 while loop:
                     # Clear the screen and print the Cart prompt to the user
                     os.system('cls' if os.name == 'nt' else 'clear')
                     cart_prompt: str = ('---Cart---\n\n'
                                         '1. View Cart\n'
-                                        '2. Remove an Item from Cart\n'
-                                        '3. Add an Item from a Category to Cart\n'
+                                        '2. Add an Item to the Cart\n'
+                                        '3. Remove an Item from the Cart\n'    
                                         '4. Checkout\n'
                                         'r. Go Back\n'
                                         'p. Logout\n'
@@ -143,44 +140,134 @@ def main():
 
                     # Menu options for the user
                     VIEW_CART: str = '1'
-                    REMOVE_ITEM: str = '2'
-                    ADD_ITEM: str = '3'
+                    ADD_ITEM: str = '2'
+                    REMOVE_ITEM: str = '3'
                     CHECKOUT: str = '4'
 
                     # Display the user's cart
                     if user_input == VIEW_CART:
                         while (user_input != GO_BACK):
-                            print('---Cart Items---\n')
-                            cart: list = cart.getCart()
-                            for item in cart:
-                                cartlist: CartList = item
-                                print(f"{cartlist}\n")
+                            print(f"---{customer.getUsername()}\'s Cart---\n")
+                            cart_copy: dict = cart.getCart()
+                            for row in cart_copy:
+                                item: Item = row
+                                print(f"{item}Stock: {cart_copy[item]}\n")
+                            print()
                             user_input: str = input('Enter r to go back to the Inventory Menu: ')
-
-                    # Attempt to remove the user specified item from their cart
-                    elif user_input == REMOVE_ITEM:
-                        print('---Remove Item---\n')
-                        item: str = input('Please enter the name of the item you would like to remove from the Cart: ')
-                        removeItem(username,item)
-                        in_cart: bool = True
-                        if (in_cart):
-                            print(f'Successfully removed {item} from the Cart')
-                        else:
-                            print(f'{item} is not in the Cart')
-                        sleep(1.5)
 
                     # Attempt to add the user specified item to their cart
                     elif user_input == ADD_ITEM:
+                        # Prompt the user for the name of the item they wish to add to their cart
                         print('---Add Item---\n')
-                        item: str = input('Please enter the item you want to add to the Cart: ')
-                        category: str = input(f"Please enter the Category of the item {item}: ")
-                        addItem(username,cartid,itemid,quantity)
+                        name: str = input('Please enter the name of the item: ')
+                        items: list[Item] = inventory.getItem(name)
+                        os.system('cls' if os.name in ('nt', 'dos') else 'clear')
+                        stock: int = 0
+
+                        # Print the list of items in the inventory with the specified item name
+                        print('---Add Item---\n')
+                        if items is not None:
+                            for row in items:
+                                item: Item = row
+                                stock: int = inventory.getStock(item.getName(), item.getCategory())
+                                print(item, end='\b')
+                                print(f"Quantity: {stock}", end='\n\n')
+
+                        # Print that there are no items of the item name in the inventory
+                        else:
+                            print(f"{name} is not in inventory")
+                            sleep(1.5)
+                            continue
+                        
+                        # Get the category we want to add to the cart for the item and check if its in the inventory
+                        category: str = input('Please enter the category of the item: ')
+                        category_exists: bool = False
+                        for row in items:
+                            item: Item = row
+                            if item.getCategory() == category:
+                                category_exists: bool = True
+                                break
+                        
+                        # Check if the category exists
+                        if category_exists:
+                            # Try to find the item in the inventory, ask for a quantity to add, and try to add it to cart
+                            for row in items:
+                                item: Item = row
+                                if item.getCategory() == category:
+                                    quantity: str = input(f"Please enter the quantity of the item {name} you want to purchase: ")
+                                    try:
+                                        quantity: int = int(quantity)
+                                        if stock < quantity:
+                                            print(f"There are only {stock} {name} {category} in stock")
+                                            break
+                                        else:
+                                            cart.addItem(item, quantity)
+                                            print(f"Successfully added {quantity} of the {name} {category} to your cart")
+                                    except ValueError:
+                                        print(f"{quantity} is not a valid quantity")
+
+                        # Print out the category that we want to buy does not exist for that item
+                        else:
+                            print(f"There is not an item called {name} of the category {category} in the inventory")
+
+                        sleep(1.5)
+                        continue
+
+                    # Attempt to remove the user specified item from their cart
+                    elif user_input == REMOVE_ITEM:
+                        # Prompt the user for the name of the item they wish to remove from their cart
+                        print('---Remove Item---\n')
+                        name: str = input('Please enter the name of the item: ')
+                        items: list[Item] = cart.getItem(name)
+                        os.system('cls' if os.name in ('nt', 'dos') else 'clear')
+
+                        # Print the list of items in the cart with the specified item name
+                        print('---Remove Item---\n')
+                        if items is not None:
+                            for row in items:
+                                item: Item = row
+                                stock: int = inventory.getStock(item.getName(), item.getCategory())
+                                print(item, end='\b')
+                                print(f"Quantity: {stock}", end='\n\n')
+
+                        # Print that there are no items of the item name in the cart
+                        else:
+                            print(f"{name} is not in the cart")
+                            sleep(1.5)
+                            continue
+                            
+                        # Get the category we want to add to the cart for the item and check if its in the inventory
+                        category: str = input('Please enter the category of the item: ')
+                        category_exists: bool = False
+                        for row in items:
+                            item: Item = row
+                            if item.getCategory() == category:
+                                category_exists: bool = True
+                                break
+
+                        # Check if there is an item with the right name and category in the cart
+                        if category_exists:
+                            # Find the item we want to remove and try to remove it from the cart
+                            for row in items:
+                                item: Item = row
+                                if item.getCategory() == category:
+                                    if cart.removeItem(name, category):
+                                        print(f"Successfully removed {name} from your cart")
+                                    else:
+                                        print(f"Failed to remove {name} from your cart")
+
+                        # Print out the category that we want to buy does not exist for that item
+                        else:
+                            print(f"There is not an item called {name} of the category {category} in the inventory")
+                        sleep(1.5)
+                        continue
 
                     # Check the user out
                     elif user_input == CHECKOUT:
                         print('---Checkout---\n')
-                        checkOut(self,username)
-
+                        sleep(1.5)
+                    
+                    # Go back to the main store menu
                     elif user_input == GO_BACK:
                         loop: bool = False
                         continue
@@ -396,7 +483,8 @@ def main():
                         while (user_input != GO_BACK):
                             print('---Items---\n')
                             inv: dict = inventory.getInv()
-                            for item in inv:
+                            for row in inv:
+                                item: Item = row
                                 print(f"{item}Stock: {inv[item]}\n")
                             print()
                             user_input: str = input('Enter r to go back to the Inventory Menu: ')
@@ -424,7 +512,8 @@ def main():
 
                             print('---View Item---\n')
                             if items is not None:
-                                for item in items:
+                                for row in items:
+                                    item: Item = row
                                     print(item)
                                 user_input: str = input('Enter r to go back to the Inventory Menu: ')
 

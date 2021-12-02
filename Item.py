@@ -55,7 +55,7 @@ def search_item(name: str, category: str) -> 'list':
     return tuples
 
 
-# Insert an item into the items table
+# Insert an item into the items table (WAS ONLY USED TO INITIALLY PUT DATA INTO THE DB, NOT USED ANYMORE)
 def insert_item(name: str, category: str, unitCost: float) -> None:
     import sqlite3 as sql
     from sqlite3.dbapi2 import Connection, Cursor
