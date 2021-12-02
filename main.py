@@ -1,12 +1,9 @@
-from Inventory import load_db
-
-
 def main():
     import os
     from Customer import Customer
     from Item import Item, get_items
     from Cart import Cart
-    from Inventory import Inventory
+    from Inventory import Inventory, load_db
     from time import sleep
     from typing import Any
 
@@ -122,6 +119,8 @@ def main():
 
             # Display the cart menu and handle interacting with the user's cart
             if user_input == CART_MENU:
+                cart: Cart =Cart()
+                inventory: Inventory = Inventory()
                 # Loop until we want to return to the main menu, log out, or exit the program
                 while loop:
                     # Clear the screen and print the Cart prompt to the user
@@ -150,14 +149,19 @@ def main():
 
                     # Display the user's cart
                     if user_input == VIEW_CART:
-                        while(user_input != GO_BACK):
-                            print(f'---{username}\'s Cart---\n')
+                        while (user_input != GO_BACK):
+                            print('---Cart Items---\n')
+                            cart: list = cart.getCart()
+                            for item in cart:
+                                cartlist: CartList = item
+                                print(f"{cartlist}\n")
                             user_input: str = input('Enter r to go back to the Inventory Menu: ')
 
                     # Attempt to remove the user specified item from their cart
                     elif user_input == REMOVE_ITEM:
                         print('---Remove Item---\n')
                         item: str = input('Please enter the name of the item you would like to remove from the Cart: ')
+                        removeItem(username,item)
                         in_cart: bool = True
                         if (in_cart):
                             print(f'Successfully removed {item} from the Cart')
@@ -170,10 +174,12 @@ def main():
                         print('---Add Item---\n')
                         item: str = input('Please enter the item you want to add to the Cart: ')
                         category: str = input(f"Please enter the Category of the item {item}: ")
+                        addItem(username,cartid,itemid,quantity)
 
                     # Check the user out
                     elif user_input == CHECKOUT:
                         print('---Checkout---\n')
+                        checkOut(self,username)
 
                     elif user_input == GO_BACK:
                         loop: bool = False

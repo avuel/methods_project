@@ -4,6 +4,7 @@ def createDB():
     create_items_table()
     create_inventory_table()
     create_order_table()
+    create_cart_table()
 
 # Create the customer table for the database
 def create_customer_table():
@@ -98,6 +99,28 @@ def create_inventory_table():
                             'stock      INTEGER    NOT NULL,'
                             'FOREIGN KEY(itemID) REFERENCES items(itemID)'
                         ');')
+    c.execute(query)
+
+    # Commit the changes and close the connection
+    connect.commit()
+    connect.close()
+    
+# Create the Cart Table for the database
+def create_cart_table():
+    import sqlite3
+    # Create a connection to the database
+    connect = sqlite3.connect('e-commerce.db')
+    c = connect.cursor()
+
+    # Create the database if it does not exist
+    query: str = ('CREATE TABLE IF NOT EXISTS cart ('
+                            'cartId     INTEGER    NOT NULL     PRIMARY KEY AUTOINCREMENT,'
+                            'itemID     INTEGER    NOT NULL,'
+                            'name        TEXT       NOT NULL    UNIQUE,'
+                            'quantity      INTEGER    NOT NULL,'
+                            'FOREIGN KEY(itemID) REFERENCES items(itemID)'
+                        ');')
+                        
     c.execute(query)
 
     # Commit the changes and close the connection
