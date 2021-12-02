@@ -18,10 +18,12 @@ class Cart:
             if new_item.getID() == item.getID():
                 self.__cart[item] = quantity
                 insert_item(new_item.getName(), new_item.getCategory(), quantity, self.__username)
+                get_cart()
                 return None
 
         # Otherwise it is a new item (itemID not in cart) so add the item
         self.__cart[new_item] = quantity
+        insert_item(new_item.getName(), new_item.getCategory(), quantity, self.__username)
 
     # Remove an item from the Cart
     def removeItem(self, name: str, category: str) -> bool:
@@ -148,7 +150,7 @@ def insert_item(name: str, category: str, quantity: int, username: str) -> None:
         # Insert the item into our database (we do not need a cartID as it is automatically generated)
         query: str = f"INSERT INTO cart (username, itemID, quantity) VALUES (:username, :itemID, :quantity)"
         c.execute(query, {'username': username, 'itemID': itemID, 'quantity': quantity})
-  
+        
     except sql.IntegrityError:
         # If we get an integrity error, continue on
         ...
@@ -171,6 +173,7 @@ def remove_item(itemID: int, username: str) -> None:
     try: 
         # Check if the item is in the database
         tuples: list[Any] = search_item(itemID, username)
+
         # Search returns none if we did not find the item
         if tuples is None:
             # Commit our changes and close the database

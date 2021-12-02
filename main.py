@@ -200,6 +200,8 @@ def main():
                                         if stock < quantity:
                                             print(f"There are only {stock} {name} {category} in stock")
                                             break
+                                        elif quantity < 1:
+                                            print(f"{quantity} is an invalid quantity to add to your cart")
                                         else:
                                             cart.addItem(item, quantity)
                                             print(f"Successfully added {quantity} of the {name} {category} to your cart")
