@@ -1,3 +1,10 @@
+# Create all the tables
+def createDB():
+    create_customer_table()
+    create_items_table()
+    create_inventory_table()
+    create_order_table()
+
 # Create the customer table for the database
 def create_customer_table():
     import sqlite3
