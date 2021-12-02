@@ -314,7 +314,7 @@ def main():
                         password: str = input('Please enter your password: ')
 
                         # If the user did not enter a valid password send the back to the menu
-                        if password != CustomerObj.getPassword():
+                        if password != customer.getPassword():
                             print("Action failed. Please check credentials.")
                             sleep(1.5)
                             # Clear the screen after we get our input

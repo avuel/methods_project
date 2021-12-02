@@ -1,8 +1,9 @@
 from db import *
+import sqlite3
 
 class Customer:
 
-    #Parameterized constructor
+    # Parameterized constructor
     def __init__(self, username, password):
 
         self.__username = username
@@ -12,7 +13,6 @@ class Customer:
         self.__state = ""
         self.__zipCode = ""
         self.__paymentInfo = ""
-        self.__orderHistory = []
 
     # * These are the getters and setters for the Customer class *
 
@@ -134,7 +134,7 @@ class Customer:
         connect = sqlite3.connect("e-commerce.db")
         cur = connect.cursor()
         # create the db
-        createDB()
+        create_customer_table()
 
         # Try to get the user from the table
         cur.execute("SELECT username FROM Customer WHERE username=? AND password=?", (self.__username, self.__password))
@@ -154,7 +154,7 @@ class Customer:
         connect = sqlite3.connect("e-commerce.db")
         cur = connect.cursor()
         # create the db
-        createDB()
+        create_customer_table()
 
         # Try to get the user from the table, on success set the flag to true
         cur.execute("SELECT * FROM Customer WHERE username=?", (self.__username,))
@@ -188,7 +188,6 @@ class Customer:
 
         # Attempt to delete the user from the db
         cur.execute("DELETE FROM Customer WHERE username=?", (self.__username,))
-        result = cur.fetchall()
 
         # Commit the changes and close the connection
         connect.commit()
