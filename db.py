@@ -1,5 +1,3 @@
-import sqlite3
-
 # Create the customer table for the database
 def create_customer_table():
 
