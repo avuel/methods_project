@@ -16,6 +16,7 @@ class Customer:
 
     # * These are the getters and setters for the Customer class *
 
+    # Set the user's username
     def setUsername(self, username):
         # Establish connection with the db and create a cursor
         connect = sqlite3.connect("e-commerce.db")
@@ -30,6 +31,7 @@ class Customer:
 
         self.__username = username
 
+    # Set the user's password
     def setPassword(self, password):
         # Establish connection with the db and create a cursor
         connect = sqlite3.connect("e-commerce.db")
@@ -45,6 +47,7 @@ class Customer:
         # Set the object's data to the passed-in value
         self.__password = password
 
+    # Set the user's address
     def setAddress(self, address):
         # Establish connection with the db and create a cursor
         connect = sqlite3.connect("e-commerce.db")
@@ -60,6 +63,7 @@ class Customer:
         # Set the object's data to the passed-in value
         self.__address = address
 
+    # Set the user's city
     def setCity(self, city):
         # Establish connection with the db and create a cursor
         connect = sqlite3.connect("e-commerce.db")
@@ -75,6 +79,7 @@ class Customer:
         # Set the object's data to the passed-in value
         self.__city = city
 
+    # Set the user's state
     def setState(self, state):
         # Establish connection with the db and create a cursor
         connect = sqlite3.connect("e-commerce.db")
@@ -90,6 +95,7 @@ class Customer:
         # Set the object's data to the passed-in value
         self.__state = state
 
+    # Set the user's zipCode
     def setZip(self, zipCode):
         # Establish connection with the db and create a cursor
         connect = sqlite3.connect("e-commerce.db")
@@ -105,6 +111,7 @@ class Customer:
         # Set the object's data to the passed-in value
         self.__zipCode = zipCode
 
+    # Set the user's payment info
     def setPaymentInfo(self, paymentInfo):
         # Establish connection with the db and create a cursor
         connect = sqlite3.connect("e-commerce.db")
@@ -201,6 +208,15 @@ class Customer:
 
         return
 
-    # Return a user's order history
+        # Return a user's order history
     def getOrderHistory(self):
-        pass
+        # Create the connection and the cursor
+        connect = sqlite3.connect("e-commerce.db")
+        cur = connect.cursor()
+
+        print("-----Order history-----")
+        
+        cur.execute("""SELECT * FROM Orders WHERE username=?""", (self.__username, ))
+        orders = cur.fetchall()
+
+        return orders
