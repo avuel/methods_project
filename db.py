@@ -77,3 +77,21 @@ def delete_items_table() -> None:
 
     conn.commit()
     conn.close()
+
+# Create the order table for the database
+def create_Inventory_table():
+    import sqlite3
+    # Create a connection to the database
+    connect = sqlite3.connect('e-commerce.db')
+    cur = connect.cursor()
+
+    # Create the database if it does not exist
+    cur.execute("CREATE TABLE IF NOT EXISTS Orders ("
+                "itemID INTEGER NOT NULL,"
+                "stock INTEGER,"
+                "Foregin Key (itemID) REFERENCES items(itemID))"
+                )
+
+    # Commit the changes and close the connection
+    connect.commit()
+    connect.close()
