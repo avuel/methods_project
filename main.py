@@ -9,7 +9,7 @@ def main():
 
     logged_in: bool = False
     run: bool = True
-    customer = None
+    customer: Customer = None
 
     while run:
         # Loop until we have logged in or exit
@@ -34,15 +34,14 @@ def main():
 
             # If we want to log in, attempt to get the username and password to login
             if user_input == LOGIN:
-                print('---Login---\n')
                 # Get the user's input and create a Customer object
                 username: str = input("Enter your username: ")
                 password: str = input("Enter your password: ")
 
-                customer = Customer(username, password)
+                customer: Customer = Customer(username, password)
 
                 # Attempt to log the user in and get the result
-                logged_in = customer.login()
+                logged_in: bool = customer.login()
                 if logged_in is False:
                     print('Failed to log in!')
                     sleep(1.5)
@@ -61,13 +60,14 @@ def main():
             # If we want to create an account, ask for a username and password (and validate the account can be made)
             elif user_input == CREATE_ACCOUNT:
                 print('---Create Account---\n')
-                # Get the user's input and create a Customer object
-                username = input("Enter your username: ")
-                password = input("Enter your password: ")
-
-                new_account = Customer(username, password)
-                create_account: bool = new_account.create_account()
                 
+                # Get the user's input and create a Customer object
+                username: str = input("Enter your username: ")
+                password: str = input("Enter your password: ")
+
+                customer: Customer = Customer(username, password)
+
+                create_account: bool = customer.create_account()
                 if create_account is False:
                     print('Failed to create account!')
                     sleep(1.5)
@@ -88,7 +88,7 @@ def main():
                 run: bool = False
                 print('---Exiting---\n')
                 break
-
+                
         # Display menus and allow the user to interact with the store once we are logged in
         while (logged_in):
             # Print the e-Commerce Store prompt to the user
@@ -228,37 +228,107 @@ def main():
                     # Display the user's order history
                     if user_input == ORDER_HIST:
                         while (user_input != GO_BACK):
-                            print(f'---{username}\'s Order History---\n')
-                            user_input: str = input('Enter r to go back to the Inventory Menu: ')
-                            
+                            print(f'---{customer.getOrderHistory()}\'s Order History---\n')
+
                     # Update the user's username (after prompting for the user's password)
                     elif user_input == EDIT_USER:
                         print('---Edit Username---\n')
                         password: str = input('Please enter your password: ')
                         username: str = input('Please enter your new username: ')
 
+                        # If the user did not enter a valid password send the back to the menu
+                        if password != customer.getPassword():
+                            print("Action failed. Please check credentials.")
+                            sleep(1.5)
+                            # Clear the screen after we get our input
+                            os.system('cls' if os.name in ('nt', 'dos') else 'clear')
+                            break
+                        # If the user enter a valid password delete their account
+                        else:
+                            customer.setUsername(username)
+                            continue
+
                     # Update the user's password (after prompting for the user's password)
                     elif user_input == EDIT_PASS:
                         print('---Edit Password---\n')
                         password: str = input('Please enter your password: ')
-                        password: str = input('Please enter your new password: ')
+                        newPassword: str = input('Please enter your new password: ')
+
+                        # If the user did not enter a valid password send the back to the menu
+                        if password != customer.getPassword():
+                            print("Action failed. Please check credentials.")
+                            sleep(1.5)
+                            # Clear the screen after we get our input
+                            os.system('cls' if os.name in ('nt', 'dos') else 'clear')
+                            break
+                        # If the user enter a valid password delete their account
+                        else:
+                            customer.setPassword(newPassword)
+                            continue
 
                     # Update the user's payment info (after prompting for the user's password)
                     elif user_input == EDIT_PAY:
                         print('---Edit Payment Info---\n')
+                        password: str = input('Please enter your password: ')
                         payment: str = input('Please enter your new payment information: ')
+
+                        # If the user did not enter a valid password send the back to the menu
+                        if password != customer.getPassword():
+                            print("Action failed. Please check credentials.")
+                            sleep(1.5)
+                            # Clear the screen after we get our input
+                            os.system('cls' if os.name in ('nt', 'dos') else 'clear')
+                            break
+                        # If the user enter a valid password delete their account
+                        else:
+                            customer.setPaymentInfo(payment)
+                            continue
 
                     # Update the user's address (after prompting for the user's password)
                     elif user_input == EDIT_ADDR:
                         print('---Edit Address Info---\n')
-                        address: str = input('Please enter your new address information: ')
+                        password: str = input('Please enter your password: ')
+                        address: str = input('Please enter your street address: ')
+                        city: str = input('Please enter your city: ')
+                        state: str = input('Please enter your state: ')
+                        zipCode: str = input('Please enter your zip: ')
+
+                        # If the user did not enter a valid password send the back to the menu
+                        if password != customer.getPassword():
+                            print("Action failed. Please check credentials.")
+                            sleep(1.5)
+                            # Clear the screen after we get our input
+                            os.system('cls' if os.name in ('nt', 'dos') else 'clear')
+                            break
+                        # If the user enter a valid password delete their account
+                        else:
+                            customer.setAddress(address)
+                            customer.setCity(city)
+                            customer.setState(state)
+                            customer.setZip(zipCode)
+                            continue
 
                     # Delete the user's account (after having them verify they want to delete it)
                     elif user_input == DEL_ACC:
                         print('---Delete Account---\n')
                         password: str = input('Please enter your password: ')
-                        if input('Please type DELETE if you are sure you want to delete your account: ') == 'DELETE':
-                            pass
+
+                        # If the user did not enter a valid password send the back to the menu
+                        if password != CustomerObj.getPassword():
+                            print("Action failed. Please check credentials.")
+                            sleep(1.5)
+                            # Clear the screen after we get our input
+                            os.system('cls' if os.name in ('nt', 'dos') else 'clear')
+                            break
+                        # If the user enter a valid password delete their account
+                        else:
+                            if input('Please type DELETE if you are sure you want to delete your account: ') == 'DELETE':
+                                customer.delete_account()
+                                logged_in: bool = False
+                                loop: bool = False
+                                continue
+                            else:
+                                break
 
                     # Go back to the main store menu
                     elif user_input == GO_BACK:
