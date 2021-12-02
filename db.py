@@ -1,6 +1,5 @@
 # Create the customer table for the database
 def create_customer_table():
-    import sqlite3
 
     # Create a connection to the database
     connect = sqlite3.connect('e-commerce.db')
@@ -21,13 +20,12 @@ def create_customer_table():
 
 # Create the order table for the database
 def create_order_table():
-    import sqlite3
-
     # Create a connection to the database
     connect = sqlite3.connect('e-commerce.db')
     cur = connect.cursor()
 
     # Create the database if it does not exist
+
     cur.execute("CREATE TABLE IF NOT EXISTS Orders ("
                 "orderID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
                 "username TEXT FOREIGN KEY,"
