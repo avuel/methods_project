@@ -136,8 +136,15 @@ class Customer:
         return self.__password
 
     def getAddress(self):
-        fullAddress = f"{self.__address} {self.__city}, {self.__state} {self.__zipCode}"
-        return fullAddress
+
+        if self.__address == "":
+            return ""
+        else:
+            fullAddress = f"{self.__address} {self.__city}, {self.__state} {self.__zipCode}"
+            return fullAddress
+
+    def getPaymentInfo(self):
+        return self.__paymentInfo
 
     # * These are the getters and setters for the Customer class *
 
@@ -165,12 +172,18 @@ class Customer:
         else:
             validated = True 
 
-
             if len(row) > 2:
-                self.__address = row[2]
-                self.__city = row[3]  
-                self.__state = row[4]  
-                self.__zipCode = row[5] 
+                if row[2] is not None:
+                    self.__address = row[2]
+                if row[3] is not None:
+                    self.__city = row[3]  
+                if row[4] is not None:
+                    self.__state = row[4]
+                if row[5] is not None:  
+                    self.__zipCode = row[5] 
+                if len(row) > 6:
+                    if row[6] is not None:
+                        self.__paymentInfo = row[6]
 
         return validated
 

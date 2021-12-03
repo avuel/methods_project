@@ -291,6 +291,17 @@ def main():
                                     print('No items to checkout')
                                     user_input = GO_BACK
                                     sleep(1.5)
+
+                                elif customer.getAddress() == "":
+                                    print('No shipping address. Please set your address.')
+                                    sleep(1.5)
+                                    user_input = GO_BACK
+                                
+                                elif customer.getPaymentInfo() == "":
+                                    print('No payment info. Please set your payment info.')
+                                    sleep(1.5)
+                                    user_input = GO_BACK
+
                                 else:
                                     cart.checkOut(customer.getAddress(), total)
                                     print(f"Purchase Successful")
