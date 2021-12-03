@@ -362,11 +362,12 @@ def main():
 
                     # Display the user's order history
                     if user_input == ORDER_HIST:
-
+                            
                         while (user_input.lower() != GO_BACK):
 
                             orders = customer.getOrderHistory()
 
+                            # If the list is empty 
                             if len(orders) == 0:
                                 print("You have no exisitng orders.")
                                 sleep(2)
@@ -375,10 +376,12 @@ def main():
                                 break
 
                             else:
+                                print("-----Order history-----")
                                 print('r. Go Back\n')
 
                                 for row in orders:
-                                    print(row[1] + "'s ","Order: \tTotal: ", "$" + row[2], "\tShipping address: ", row[3])
+                                    print(f"{row[1]}\'s Order: \tTotal: ${float(row[2]):.2f} \t\tShipping address: {row[3]}")
+                                    # row[1] + "'s ","Order: \tTotal: ", "$", total, "\tShipping address: ", row[3]
 
                                 user_input = input("\nEnter \'r\' to go back: ")
 

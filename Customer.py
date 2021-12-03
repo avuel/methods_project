@@ -136,7 +136,8 @@ class Customer:
         return self.__password
 
     def getAddress(self):
-        return self.__address
+        fullAddress = f"{self.__address} {self.__city}, {self.__state} {self.__zipCode}"
+        return fullAddress
 
     # * These are the getters and setters for the Customer class *
 
@@ -155,14 +156,21 @@ class Customer:
         insert_item('iliad','books',50)
         load_db()
         # Try to get the user from the table
-        cur.execute("SELECT username FROM Customer WHERE username=? AND password=?", (self.__username, self.__password))
-        row = cur.fetchall()
+        cur.execute("SELECT * FROM Customer WHERE username=? AND password=?", (self.__username, self.__password))
+        row = cur.fetchone()
 
         # If the length of name is 0 the data was not in the db, set the flag to false, otherwise set it to true
         if len(row) == 0:
             validated = False
         else:
-            validated = True
+            validated = True 
+
+
+            if len(row) > 2:
+                self.__address = row[2]
+                self.__city = row[3]  
+                self.__state = row[4]  
+                self.__zipCode = row[5] 
 
         return validated
 
@@ -218,8 +226,6 @@ class Customer:
         # Create the connection and the cursor
         connect = sqlite3.connect("e-commerce.db")
         cur = connect.cursor()
-
-        print("-----Order history-----")
         
         cur.execute("""SELECT * FROM Orders WHERE username=?""", (self.__username, ))
         orders = cur.fetchall()

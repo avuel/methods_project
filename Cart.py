@@ -212,14 +212,7 @@ def insert_item(name: str, category: str, quantity: int, username: str) -> None:
 
         # Search returns none if we did not find the item
         if tuples is not None:
-            print('update')
-            for row in items:
-                if row[0] == itemID:
-                    print(f"item: {row[1]}")
-                    print(f"ID: {row[0]}")
-            print(f"quantity: {quantity}")
-            print(f"username: {username}")
-            print()
+            
             # If we found a row, we have to update it instead
             query: str = f"UPDATE cart SET quantity=:quantity WHERE username=:username"
             c.execute(query, {'quantity': quantity, 'username': username})
