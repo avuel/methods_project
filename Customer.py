@@ -133,6 +133,9 @@ class Customer:
     def getPassword(self):
         return self.__password
 
+    def getAddress(self):
+        return self.__address
+
     # * These are the getters and setters for the Customer class *
 
     # This functions checks if the user entered valid credentials and returns the result

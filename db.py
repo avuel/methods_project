@@ -59,7 +59,7 @@ def create_items_table() -> None:
     try:
         query: str = ('CREATE TABLE IF NOT EXISTS items ('
                             'itemID      INTEGER    NOT NULL    PRIMARY KEY AUTOINCREMENT,'
-                            'name        TEXT       NOT NULL    UNIQUE,'
+                            'name        TEXT       NOT NULL,'
                             'unitCost    REAL       NOT NULL,'
                             'category    TEXT       NOT NULL'
                         ')')

@@ -5,8 +5,6 @@ def main():
     from Inventory import Inventory
     from Item import Item
     from time import sleep
-    from typing import Any
-    import sqlite3
 
     logged_in: bool = False
     run: bool = True
@@ -47,10 +45,10 @@ def main():
                 # Attempt to log the user in and get the result
                 logged_in: bool = customer.login()
                 if logged_in is False:
-                    print('Failed to log in!')
+                    print('\nFailed to log in!')
 
                 elif logged_in is True:
-                    print('Successfully logged in!')
+                    print('\nSuccessfully logged in!')
                     inventory: Inventory = Inventory()
                     cart: Cart = Cart(customer.getUsername())
                     inventory.load()
@@ -75,10 +73,10 @@ def main():
                 # Try to create the accoutn and output the result
                 create_account: bool = customer.create_account()
                 if create_account is False:
-                    print('Failed to create account!')
+                    print('\nFailed to create account!')
 
                 elif create_account is True:
-                    print('Successfully created account!')
+                    print('\nSuccessfully created account!')
 
                 # Sleep to let the user read the output and then clear the menu
                 sleep(1.5)
@@ -86,7 +84,7 @@ def main():
                 continue
 
             # Exit the program
-            elif user_input == EXIT:
+            elif user_input.lower() == EXIT:
                 run: bool = False
                 print('---Exiting---\n')
                 break
@@ -147,13 +145,13 @@ def main():
 
                     # Display the user's cart
                     if user_input == VIEW_CART:
-                        while (user_input != GO_BACK):
+                        while (user_input.lower() != GO_BACK):
                             print(f"---{customer.getUsername()}\'s Cart---\n")
-                            cart_copy: dict = cart.getCart()
+                            cart_copy, total = cart.getCart()
                             for row in cart_copy:
                                 item: Item = row
-                                print(f"{item}Stock: {cart_copy[item]}\n")
-                            print()
+                                print(f"{item}Quantity: {cart_copy[item]}\n")
+                            print(f"Total cost: {total:.2f}\n")
                             user_input: str = input('Enter r to go back to the Inventory Menu: ')
 
                     # Attempt to add the user specified item to their cart
@@ -199,19 +197,21 @@ def main():
                                     try:
                                         quantity: int = int(quantity)
                                         if stock < quantity:
-                                            print(f"There are only {stock} {name} {category} in stock")
+                                            print(f"\nThere are only {stock} {name} {category} in stock")
                                             break
                                         elif quantity < 1:
-                                            print(f"{quantity} is an invalid quantity to add to your cart")
+                                            print(f"\n{quantity} is an invalid quantity to add to your cart")
                                         else:
                                             cart.addItem(item, quantity)
-                                            print(f"Successfully added {quantity} of the {name} {category} to your cart")
+                                            print(f"\nSuccessfully added {quantity} of the {name} {category} to your cart")
+                                    except TypeError:
+                                        print(f"\n{quantity} is not a valid quantity")
                                     except ValueError:
-                                        print(f"{quantity} is not a valid quantity")
+                                        print(f"\n{quantity} is not a valid quantity")
 
                         # Print out the category that we want to buy does not exist for that item
                         else:
-                            print(f"There is not an item called {name} of the category {category} in the inventory")
+                            print(f"\nThere is not an item called {name} of the category {category} in the inventory")
 
                         sleep(1.5)
                         continue
@@ -255,9 +255,9 @@ def main():
                                 item: Item = row
                                 if item.getCategory() == category:
                                     if cart.removeItem(name, category):
-                                        print(f"Successfully removed {name} from your cart")
+                                        print(f"\nSuccessfully removed {name} from your cart")
                                     else:
-                                        print(f"Failed to remove {name} from your cart")
+                                        print(f"\nFailed to remove {name} from your cart")
 
                         # Print out the category that we want to buy does not exist for that item
                         else:
@@ -267,16 +267,43 @@ def main():
 
                     # Check the user out
                     elif user_input == CHECKOUT:
-                        print('---Checkout---\n')
-                        sleep(1.5)
+                        # Check the user out
+                        while user_input.lower() != GO_BACK:
+                            os.system('cls' if os.name in ('nt', 'dos') else 'clear')
+                            print(f"---{customer.getUsername()}\'s Receipt---\n")
+                            # Print out the users receipt
+                            cart_copy, total = cart.getCart()
+                            for row in cart_copy:
+                                item: Item = row
+                                print(f"{item}Quantity: {cart_copy[item]}\n")
+                            print(f"Total cost: {total:.2f}\n")
+                            user_input: str = input('Enter y to buy the items or r to go back to the Inventory Menu: ')
+                                # Go back to the main store menu
+                            if user_input.lower() == 'y':
+                                if len(cart_copy) == 0:
+                                    print('No items to checkout')
+                                    user_input = GO_BACK
+                                    sleep(1.5)
+                                else:
+                                    cart.checkOut(customer.getAddress(), total)
+                                    print(f"Purchase Successful")
+                                    inventory: Inventory = Inventory()
+                                    inventory.load()
+                                    sleep(1.5)
+                                    user_input = GO_BACK
+                                    
+                            elif user_input.lower() == 'r':
+                                user_input = GO_BACK
+                        continue
+
                     
                     # Go back to the main store menu
-                    elif user_input == GO_BACK:
+                    elif user_input.lower() == GO_BACK:
                         loop: bool = False
                         continue
 
                     # Log the user out
-                    elif user_input == LOGOUT:
+                    elif user_input.lower() == LOGOUT:
                         loop: bool = False
                         logged_in: bool = False
                         print('Logging Out...\n')
@@ -284,7 +311,7 @@ def main():
                         continue
 
                     # Exit the program
-                    elif user_input == EXIT:
+                    elif user_input.lower() == EXIT:
                         loop: bool = False
                         logged_in: bool = False
                         run: bool = False
@@ -329,7 +356,7 @@ def main():
                     # Display the user's order history
                     if user_input == ORDER_HIST:
 
-                        while (user_input != GO_BACK):
+                        while (user_input.lower() != GO_BACK):
 
                             orders = customer.getOrderHistory()
 
@@ -427,7 +454,7 @@ def main():
                             continue
 
                     # Delete the user's account (after having them verify they want to delete it)
-                    elif user_input == DEL_ACC:
+                    elif user_input.lower() == DEL_ACC:
                         print('---Delete Account---\n')
                         password: str = input('Please enter your password: ')
 
@@ -449,12 +476,12 @@ def main():
                                 break
 
                     # Go back to the main store menu
-                    elif user_input == GO_BACK:
+                    elif user_input.lower() == GO_BACK:
                         loop: bool = False
                         continue
 
                     # Log the user out
-                    elif user_input == LOGOUT:
+                    elif user_input.lower() == LOGOUT:
                         loop: bool = False
                         logged_in: bool = False
                         print('Logging Out...\n')
@@ -462,7 +489,7 @@ def main():
                         continue
 
                     # Exit the program
-                    elif user_input == EXIT:
+                    elif user_input.lower() == EXIT:
                         loop: bool = False
                         logged_in: bool = False
                         run: bool = False
@@ -500,7 +527,7 @@ def main():
 
                     # Print the items in the stores inventory
                     if user_input == VIEW_ITEMS:
-                        while (user_input != GO_BACK):
+                        while (user_input.lower() != GO_BACK):
                             print('---Items---\n')
                             inv: dict = inventory.getInv()
                             for row in inv:
@@ -510,7 +537,7 @@ def main():
                             user_input: str = input('Enter r to go back to the Inventory Menu: ')
 
                     elif user_input == SEARCH_CATEGORY:
-                        while (user_input != GO_BACK):
+                        while (user_input.lower() != GO_BACK):
                             print('---View Category--\n')
                             category: str = input('Please enter which category: ')
                             os.system('cls' if os.name in ('nt', 'dos') else 'clear')
@@ -524,7 +551,7 @@ def main():
 
                     # Search for an item in the store's inventory based on the user's input
                     elif user_input == SEARCH_ITEMS:
-                        while (user_input != GO_BACK):
+                        while (user_input.lower() != GO_BACK):
                             print('---View Item---\n')
                             name: str = input('Please enter the name of the item: ')
                             items = inventory.getItem(name)
@@ -543,13 +570,13 @@ def main():
                                 user_input = GO_BACK
 
                     # Go back to the store's main menu
-                    elif user_input == GO_BACK:
+                    elif user_input.lower() == GO_BACK:
                         loop: bool = False
                         os.system('cls' if os.name == 'nt' else 'clear')
                         continue
 
                     # Log the user out
-                    elif user_input == LOGOUT:
+                    elif user_input.lower() == LOGOUT:
                         loop: bool = False
                         logged_in: bool = False
                         print('Logging out...\n')
@@ -557,7 +584,7 @@ def main():
                         continue
 
                     # Exit the program
-                    elif user_input == EXIT:
+                    elif user_input.lower() == EXIT:
                         loop: bool = False
                         logged_in: bool = False
                         run: bool = False
@@ -566,14 +593,14 @@ def main():
                 continue
 
             # Log the user out
-            elif user_input == LOGOUT:
+            elif user_input.lower() == LOGOUT:
                 logged_in: bool = False
                 print('Logging Out...\n')
                 sleep(1.5)
                 continue
 
             # Exit the program
-            elif user_input == EXIT:
+            elif user_input.lower() == EXIT:
                 logged_in: bool = False
                 run: bool = False
                 print('Exiting...\n')

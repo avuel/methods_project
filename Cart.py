@@ -1,3 +1,5 @@
+from typing import Type
+from Inventory import Inventory
 from Item import Item
 class Cart:
     # Constructor
@@ -5,10 +7,21 @@ class Cart:
         self.__username: str = username
         self.__cart: dict = {}
 
-    # Return a deepcopy of the list (python is weird return a deepcopy to be safe)
-    def getCart(self) -> dict:
+    # Return a deepcopy of the list and the total cost of the cart (python is weird return a deepcopy to be safe)
+    def getCart(self) -> 'tuple[dict, float]':
         from copy import deepcopy
-        return deepcopy(self.__cart)
+        from Item import Item
+        total: float = 0.0
+
+        for row in self.__cart:
+            item: Item = row
+            try:
+                total: float = total + (float(item.getUnitCost()) * float(self.__cart[row]))
+            except ValueError:
+                continue
+            except TypeError:
+                continue
+        return (deepcopy(self.__cart), total)
 
     # Add item to Cart
     def addItem(self, new_item: Item, quantity: int) -> None:
@@ -62,6 +75,65 @@ class Cart:
                     return self.__cart[item]
 
         return None
+
+    def checkOut(self, address: str, total: float) -> None:
+        import sqlite3 as sql
+        from sqlite3.dbapi2 import Connection, Cursor
+        from typing import Any
+        from Inventory import get_inventory
+
+        # If we did not grab any rows nothing to insert so return
+        if len(self.__cart) == 0:
+            return None
+
+        # Connect to the database and create a cursor
+        conn: Connection = sql.connect('e-commerce.db')
+        c: Cursor = conn.cursor()
+
+        # Grab all of the data where the itemID and username match
+        query: str = "DELETE FROM cart WHERE username=:username"
+        c.execute(query, {'username': self.__username})
+
+        conn.commit()
+        conn.close()
+
+        # Connect to the database and create a cursor
+        conn: Connection = sql.connect('e-commerce.db')
+        c: Cursor = conn.cursor()
+
+        # Insert the item into our database (we do not need an orderID as it is automatically generated)
+        query: str = f"INSERT INTO Orders (username, total, address) VALUES (:username, :total, :address)"
+        c.execute(query, {'username': self.__username, 'total': total, 'address': address})
+
+        # Commmit all of our changes and close our connection
+        conn.commit()
+        conn.close()
+
+        # Update the inventory
+        conn: Connection = sql.connect('e-commerce.db')
+        c: Cursor = conn.cursor()
+
+        inventory: list[Any] = get_inventory()
+
+        for row in self.__cart:
+            item: Item = row
+            stock: int = 0
+            for row2 in inventory:
+                if item.getID() == row2[0]:
+                    stock: int = row2[1]
+                    break
+
+            # Insert the item into our database (we do not need an orderID as it is automatically generated)
+            query: str = f"UPDATE inventory SET stock=:stock WHERE itemID=:itemID;"
+            c.execute(query, {'stock': (stock - self.__cart[item]), 'itemID': item.getID()})
+        
+        # Commmit all of our changes and close our connection
+        conn.commit()
+        conn.close()
+
+        # Update the user's cart
+        self.load()
+        self.__cart: dict = {}
 
     # Load the data from the cart table for the specified user
     def load(self) -> None:
@@ -140,6 +212,14 @@ def insert_item(name: str, category: str, quantity: int, username: str) -> None:
 
         # Search returns none if we did not find the item
         if tuples is not None:
+            print('update')
+            for row in items:
+                if row[0] == itemID:
+                    print(f"item: {row[1]}")
+                    print(f"ID: {row[0]}")
+            print(f"quantity: {quantity}")
+            print(f"username: {username}")
+            print()
             # If we found a row, we have to update it instead
             query: str = f"UPDATE cart SET quantity=:quantity WHERE username=:username"
             c.execute(query, {'quantity': quantity, 'username': username})
@@ -192,7 +272,6 @@ def remove_item(itemID: int, username: str) -> None:
     # Commit our changes and close the database
     conn.commit()
     conn.close()
-
 
 # Grab all of the rows from the cart table
 def get_cart() -> list:

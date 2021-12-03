@@ -9,7 +9,7 @@ class Item:
 
     # Change how our object is printed
     def __repr__(self) -> str:
-        return (f"ID: {self.__itemID}\nName: {self.__name}\nunitCost: {self.__unitCost:.2f}\nCategory: {self.__category}\n")
+        return (f"ID: {self.__itemID}\nName: {self.__name}\nCost per Item: {self.__unitCost:.2f}\nCategory: {self.__category}\n")
 
     # Get the ID of an Item
     def getID(self) -> int:
