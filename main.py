@@ -67,6 +67,13 @@ def main():
                 username: str = input("Enter your username: ")
                 password: str = input("Enter your password: ")
 
+                if username == "" or password == "":
+                    print("Account credentials cannot be blank.")
+                    sleep(1.5)
+                    # Clear the screen after we get our input
+                    os.system('cls' if os.name in ('nt', 'dos') else 'clear')
+                    break
+
                 # Create a customer object of the specified username and password
                 customer: Customer = Customer(username, password)
 
@@ -362,7 +369,7 @@ def main():
 
                             if len(orders) == 0:
                                 print("You have no exisitng orders.")
-                                sleep(1.5)
+                                sleep(2)
                                 # Clear the screen after we get our input
                                 os.system('cls' if os.name in ('nt', 'dos') else 'clear')
                                 break
@@ -388,6 +395,15 @@ def main():
                             # Clear the screen after we get our input
                             os.system('cls' if os.name in ('nt', 'dos') else 'clear')
                             break
+
+                        # If the user did not enter a valid username send them back to the menu
+                        elif username == "":
+                            print("Action failed. username cannot be blank.")
+                            sleep(1.5)
+                            # Clear the screen after we get our input
+                            os.system('cls' if os.name in ('nt', 'dos') else 'clear')
+                            break
+
                         # If the user enter a valid password delete their account
                         else:
                             customer.setUsername(username)
@@ -406,6 +422,15 @@ def main():
                             # Clear the screen after we get our input
                             os.system('cls' if os.name in ('nt', 'dos') else 'clear')
                             break
+
+                        # If the user did not enter a valid password send them back to the menu
+                        elif newPassword == "":
+                            print("Action failed. password cannot be blank.")
+                            sleep(1.5)
+                            # Clear the screen after we get our input
+                            os.system('cls' if os.name in ('nt', 'dos') else 'clear')
+                            break
+
                         # If the user enter a valid password delete their account
                         else:
                             customer.setPassword(newPassword)
@@ -424,6 +449,15 @@ def main():
                             # Clear the screen after we get our input
                             os.system('cls' if os.name in ('nt', 'dos') else 'clear')
                             break
+
+                        # If the user did not enter valid payment info send them back to the menu
+                        elif payment == "":
+                            print("Action failed. payment info cannot be blank.")
+                            sleep(1.5)
+                            # Clear the screen after we get our input
+                            os.system('cls' if os.name in ('nt', 'dos') else 'clear')
+                            break
+
                         # If the user enter a valid password delete their account
                         else:
                             customer.setPaymentInfo(payment)
@@ -445,6 +479,15 @@ def main():
                             # Clear the screen after we get our input
                             os.system('cls' if os.name in ('nt', 'dos') else 'clear')
                             break
+
+                        # If the user did not enter a valid password send them back to the menu
+                        elif address == "" or city == "" or state == "" or zipCode == "":
+                            print("Action failed. address information cannot be blank.")
+                            sleep(1.5)
+                            # Clear the screen after we get our input
+                            os.system('cls' if os.name in ('nt', 'dos') else 'clear')
+                            break
+
                         # If the user enter a valid password delete their account
                         else:
                             customer.setAddress(address)
