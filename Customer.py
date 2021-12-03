@@ -167,7 +167,7 @@ class Customer:
         row = cur.fetchone()
 
         # If the length of name is 0 the data was not in the db, set the flag to false, otherwise set it to true
-        if len(row) == 0:
+        if row is None:
             validated = False
         else:
             validated = True 
