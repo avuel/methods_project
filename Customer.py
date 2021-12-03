@@ -157,11 +157,6 @@ class Customer:
         cur = connect.cursor()
         # create the db
         createDB()
-        insert_item('harry potter','books',1.30)
-        insert_item('captain underpants','books',5.30)
-        insert_item('the odyssey','books',10.21)
-        insert_item('iliad','books',50)
-        load_db()
         # Try to get the user from the table
         cur.execute("SELECT * FROM Customer WHERE username=? AND password=?", (self.__username, self.__password))
         row = cur.fetchone()
